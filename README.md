@@ -1,4 +1,4 @@
-My C++ Web Server implementation.
+My C++ Web Server implementation using modern C++17/20.
 
 For the concurrency model, I'm using a thread pool manually implemented with the C++ standard libraries but could be easily substituted by another model, for example, Boost.Asio libraries.
 

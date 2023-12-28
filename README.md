@@ -1,4 +1,4 @@
-My C++ Web Server implementation without 3rd libraries.
+My C++ Web Server implementation.
 
 For the concurrency model, I'm using a thread pool manually implemented with the C++ standard libraries but could be easily substituted by another model, for example, Boost.Asio libraries.
 

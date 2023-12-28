@@ -1,4 +1,4 @@
-C++ Web Server with Sockets and a Thread Pool using only the standard libraries. I applied design patterns and high scalability. My next steps are handling SSL, parsing HTTP headers, writing a REST API, and tests with Google Test and Google Mock.
+A C++ Web Server implementation without 3rd libraries.
 
 Everything is reusable, scalable, testable, adaptable, and optimized.
 

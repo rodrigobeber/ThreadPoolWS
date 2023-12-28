@@ -2,6 +2,7 @@
 
 #include <netinet/in.h>
 #include <string>
+#include <optional>
 #include "network/INetworkService.h"
 #include "network/IHttpHandler.h"
 #include "concurrency/ThreadPoolConcurrency.h"
@@ -22,6 +23,7 @@ private:
     void startListening();
     void acceptConnections();
     void handleConnection(int client_socket);
+    std::optional<std::string> readRequest(int client_socket);
 
 public:
     explicit SocketNetworkService(size_t port, size_t maxQueuedConnections, IConcurrencyModel* concurrencyModel, IHttpHandler* handler);

@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdexcept>
 #include <iostream>
+#include <optional>
 #include "network/SocketNetworkService.h"
 
 SocketNetworkService::SocketNetworkService(size_t port, size_t maxQueuedConnections, IConcurrencyModel* concurrencyModel, IHttpHandler* httpHandler) :
@@ -71,20 +72,45 @@ void SocketNetworkService::acceptConnections() {
     }
 }
 
-void SocketNetworkService::handleConnection(int client_socket) {
-    // TODO: change to dynamic size
-    char buffer[1024] = {0};
-    ssize_t bytes_read = read(client_socket, buffer, sizeof(buffer) - 1);
+std::optional<std::string> SocketNetworkService::readRequest(int client_socket) {
+    const size_t BUFFER_SIZE = 1024;
+    char buffer[BUFFER_SIZE] = {0};
+    std::string request;
 
-    if (bytes_read < 0) {
-        // Handle read error
+    ssize_t bytes_read;
+    while (true) {
+        bytes_read = read(client_socket, buffer, sizeof(buffer) - 1);
+
+        // Handle read errors or client disconnection
+        if (bytes_read <= 0) {
+            if (bytes_read < 0) {
+                std::cerr << "Error reading from socket." << std::endl;
+            } else {
+                std::cerr << "Client closed the connection." << std::endl;
+            }
+            return std::nullopt;  // Return an empty optional to indicate the failure
+        }
+
+        request.append(buffer, bytes_read);
+
+        // Check if the end of the request has been reached.
+        if (request.find("\r\n\r\n") != std::string::npos) {
+            break;
+        }
+    }
+
+    return request;
+}
+
+void SocketNetworkService::handleConnection(int client_socket) {
+
+    std::optional<std::string> request = readRequest(client_socket);
+    if (!request) {
         close(client_socket);
         return;
     }
 
-    // Convert buffer to std::string and handle the request
-    std::string request(buffer);
-    std::string response = httpHandler->handleRequest(request);
+    std::string response = httpHandler->handleRequest(request.value());
 
     // Send the response
     send(client_socket, response.c_str(), response.size(), 0);

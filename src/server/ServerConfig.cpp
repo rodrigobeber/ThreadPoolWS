@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include "ServerConfig.h"
+#include "server/ServerConfig.h"
 
 void ServerConfig::parseArguments(int argc, char* argv[]) {
     for (int i = 1; i < argc; i++) {

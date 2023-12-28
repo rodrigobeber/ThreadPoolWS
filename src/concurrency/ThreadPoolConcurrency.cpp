@@ -11,7 +11,7 @@ ThreadPoolConcurrency::~ThreadPoolConcurrency() {
         std::unique_lock<std::mutex> lock(queue_mutex);
         stop = true;
     }
-    condition.notify_all();
+    taskCondition.notify_all();
     for (std::thread &worker : workers) {
         worker.join();
     }
@@ -22,7 +22,7 @@ void ThreadPoolConcurrency::execute(std::function<void()> task) {
         std::unique_lock<std::mutex> lock(queue_mutex);
         tasks.emplace(task);
     }
-    condition.notify_one();
+    taskCondition.notify_one();
 }
 
 void ThreadPoolConcurrency::processTasks() {
@@ -31,7 +31,7 @@ void ThreadPoolConcurrency::processTasks() {
         {
             std::unique_lock<std::mutex> lock(this->queue_mutex);
             // Sleep and wake have task to do or must stop
-            this->condition.wait(lock, [this] { return !this->tasks.empty() || this->stop; });
+            this->taskCondition.wait(lock, [this] { return !this->tasks.empty() || this->stop; });
             // Graceful shutdown
             if (this->stop && this->tasks.empty()) return;
             // Extract the task from the queue

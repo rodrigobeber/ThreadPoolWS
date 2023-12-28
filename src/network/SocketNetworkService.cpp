@@ -4,8 +4,8 @@
 #include <iostream>
 #include "network/SocketNetworkService.h"
 
-SocketNetworkService::SocketNetworkService(int port, IConcurrencyModel* concurrencyModel, IHttpHandler* httpHandler) :
-        port(port), isRunning(false), concurrencyModel(concurrencyModel), httpHandler(httpHandler) {
+SocketNetworkService::SocketNetworkService(size_t port, size_t maxQueuedConnections, IConcurrencyModel* concurrencyModel, IHttpHandler* httpHandler) :
+        port(port), maxQueuedConnections(maxQueuedConnections), isRunning(false), concurrencyModel(concurrencyModel), httpHandler(httpHandler) {
     setupSocket();
 }
 

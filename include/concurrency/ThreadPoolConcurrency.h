@@ -15,6 +15,7 @@ private:
     std::mutex queue_mutex;
     std::condition_variable condition;
     bool stop;
+    void processTasks();
 
 public:
     explicit ThreadPoolConcurrency(size_t threads);

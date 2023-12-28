@@ -11,7 +11,8 @@ private:
     int server_fd;
     struct sockaddr_in address;
     const int MAX_QUEUED_CONN {100};
-    int port;
+    size_t port;
+    size_t maxQueuedConnections;
     bool isRunning;
     IConcurrencyModel* concurrencyModel;
     IHttpHandler* httpHandler;
@@ -23,7 +24,7 @@ private:
     void handleConnection(int client_socket);
 
 public:
-    explicit SocketNetworkService(int port, IConcurrencyModel* concurrencyModel, IHttpHandler* handler);
+    explicit SocketNetworkService(size_t port, size_t maxQueuedConnections, IConcurrencyModel* concurrencyModel, IHttpHandler* handler);
     ~SocketNetworkService();
 
     void start() override;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <thread>
 
 struct ServerConfig {
     size_t port = 8080;
